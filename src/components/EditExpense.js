@@ -9,6 +9,15 @@ const tags = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
 class EditExpense extends React.Component {
   constructor(props) {
     super(props);
+    const { expenseInEdition } = this.props;
+    this.state = {
+      id: expenseInEdition.id,
+      value: expenseInEdition.value,
+      currency: expenseInEdition.currency,
+      tag: expenseInEdition.tag,
+      method: expenseInEdition.method,
+      description: expenseInEdition.description,
+    };
     this.handleChange = this.handleChange.bind(this);
     this.onSubmitForm = this.onSubmitForm.bind(this);
   }
@@ -61,7 +70,9 @@ class EditExpense extends React.Component {
   }
 
   render() {
-    const { currencies, expenseInEdition: { value } } = this.props;
+    const { currencies, expenseInEdition } = this.props;
+    const { value } = this.state;
+    console.log(expenseInEdition);
     return (
       <div className="formEditExpense">
         <form>
@@ -72,7 +83,7 @@ class EditExpense extends React.Component {
               type="text"
               id="valor"
               name="value"
-              defaultvalue={ value }
+              value={ value }
               onChange={ this.handleChange }
             />
           </label>

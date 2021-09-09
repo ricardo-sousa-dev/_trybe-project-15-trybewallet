@@ -10,7 +10,6 @@ class TableExpense extends React.Component {
     this.subtitle = this.subtitle.bind(this);
     this.listExpenses = this.listExpenses.bind(this);
     this.clickDeleteExpense = this.clickDeleteExpense.bind(this);
-    // this.filterExpenseId = this.filterExpenseId.bind(this);
     this.clickEditExpense = this.clickEditExpense.bind(this);
   }
 
@@ -30,11 +29,6 @@ class TableExpense extends React.Component {
     );
   }
 
-  // filterExpenseId(id) {
-  //   const { expenses } = this.props;
-  //   return expenses.id === id;
-  // }
-
   clickDeleteExpense(id, convertValue) {
     const { dispatchDeleteExpense } = this.props;
     dispatchDeleteExpense(id, convertValue);
@@ -46,6 +40,7 @@ class TableExpense extends React.Component {
       id,
       value: expenses[id].value,
       tag: expenses[id].tag,
+      currency: expenses[id].currency,
       method: expenses[id].method,
       description: expenses[id].description,
       exchangeRates: expenses[id].exchangeRates,
