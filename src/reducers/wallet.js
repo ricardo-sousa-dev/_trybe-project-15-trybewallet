@@ -1,4 +1,10 @@
-import { SAVE_EXPENSE, SAVE_CURRENCIES, DELETE_EXPENSE, EDIT_EXPENSE } from '../actions';
+import {
+  SAVE_EXPENSE,
+  SAVE_CURRENCIES,
+  DELETE_EXPENSE,
+  EDIT_EXPENSE,
+  FORM_EDIT_EXPENSE,
+} from '../actions';
 
 const INITIAL_STATE = {
   currencies: [],
@@ -33,6 +39,11 @@ const wallet = (state = INITIAL_STATE, action) => {
       ...state,
       editExpense: true,
       expenseInEdition: action.expenseInEdition,
+    };
+  case FORM_EDIT_EXPENSE:
+    return {
+      ...state,
+      expenses: [action.newArrayExpenses],
     };
   default:
     return state;

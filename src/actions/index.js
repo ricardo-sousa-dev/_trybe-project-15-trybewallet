@@ -4,6 +4,7 @@ export const SAVE_EXPENSE = 'SAVE_EXPENSE';
 export const SAVE_CAMBIO = 'SAVE_CAMBIO';
 export const DELETE_EXPENSE = 'DELETE_EXPENSE';
 export const EDIT_EXPENSE = 'EDIT_EXPENSE';
+export const FORM_EDIT_EXPENSE = 'FORM_EDIT_EXPENSE';
 
 export const saveLogin = (state) => (
   {
@@ -61,5 +62,12 @@ export function editExpense(expenseInEdition) {
   return {
     type: EDIT_EXPENSE,
     expenseInEdition,
+  };
+}
+
+export function formEditExpense(newArrayExpenses) {
+  return {
+    type: FORM_EDIT_EXPENSE,
+    newArrayExpenses,
   };
 }

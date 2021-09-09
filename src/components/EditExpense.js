@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchApiCurrencies, editExpense } from '../actions';
+import { fetchApiCurrencies, formEditExpense } from '../actions';
 
 const paymentMethods = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
 const tags = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
@@ -17,6 +17,8 @@ class EditExpense extends React.Component {
       tag: expenseInEdition.tag,
       method: expenseInEdition.method,
       description: expenseInEdition.description,
+      // eslint-disable-next-line react/no-unused-state
+      // exchangeRates: expenseInEdition.exchangeRates,
     };
     this.handleChange = this.handleChange.bind(this);
     this.onSubmitForm = this.onSubmitForm.bind(this);
@@ -28,8 +30,10 @@ class EditExpense extends React.Component {
   }
 
   onSubmitForm() {
-    const { dispatchEditExpense } = this.props;
-    dispatchEditExpense(this.state);
+    const { id } = this.state;
+    const { dispatchFormEdit, expenses } = this.props;
+    const newArrayExpenses = expenses.splice(id, 0, this.state);
+    dispatchFormEdit(newArrayExpenses);
   }
 
   handleChange({ target: { name, value } }) {
@@ -39,6 +43,7 @@ class EditExpense extends React.Component {
   }
 
   methodInput() {
+    const { method } = this.state;
     return (
       <label htmlFor="método de pagamento">
         Método de pagamento:
@@ -47,15 +52,17 @@ class EditExpense extends React.Component {
           name="method"
           onChange={ this.handleChange }
           className="form__field"
+          value={ method }
         >
-          { paymentMethods.map((method) => (
-            <option key={ method }>{ method }</option>)) }
+          { paymentMethods.map((meth) => (
+            <option key={ meth }>{ meth }</option>)) }
         </select>
       </label>
     );
   }
 
   descriptionInput() {
+    const { description } = this.state;
     return (
       <label htmlFor="descrição">
         Descrição:
@@ -63,16 +70,36 @@ class EditExpense extends React.Component {
           type="text"
           id="descrição"
           name="description"
+          value={ description }
           onChange={ this.handleChange }
         />
       </label>
     );
   }
 
+  currencyInput() {
+    const { currency } = this.state;
+    const { currencies } = this.props;
+    return (
+      <label htmlFor="moeda">
+        Moeda:
+        <select
+          type="text"
+          name="currency"
+          id="moeda"
+          value={ currency }
+          onChange={ this.handleChange }
+        >
+          { currencies
+            .filter((index) => index !== 'USDT')
+            .map((coin) => (<option key={ coin }>{ coin }</option>)) }
+        </select>
+      </label>
+    );
+  }
+
   render() {
-    const { currencies, expenseInEdition } = this.props;
-    const { value } = this.state;
-    console.log(expenseInEdition);
+    const { value, tag } = this.state;
     return (
       <div className="formEditExpense">
         <form>
@@ -87,14 +114,7 @@ class EditExpense extends React.Component {
               onChange={ this.handleChange }
             />
           </label>
-          <label htmlFor="moeda">
-            Moeda:
-            <select type="text" name="currency" id="moeda" onChange={ this.handleChange }>
-              { currencies
-                .filter((index) => index !== 'USDT')
-                .map((coin) => (<option key={ coin }>{ coin }</option>)) }
-            </select>
-          </label>
+          { this.currencyInput() }
           { this.methodInput() }
           <label htmlFor="tag">
             Tag:
@@ -102,9 +122,10 @@ class EditExpense extends React.Component {
               onChange={ this.handleChange }
               id="tag"
               name="tag"
+              value={ tag }
               className="form__field"
             >
-              { tags.map((tag) => (<option key={ tag }>{ tag }</option>)) }
+              { tags.map((oneTag) => (<option key={ oneTag }>{ oneTag }</option>)) }
             </select>
           </label>
           { this.descriptionInput() }
@@ -122,17 +143,18 @@ class EditExpense extends React.Component {
 }
 
 EditExpense.propTypes = {
-  currencies: PropTypes.array,
+  currencies: PropTypes.array.isRequired,
 }.isRequired;
 
 const mapStateToProps = (stateStore) => ({
   currencies: stateStore.wallet.currencies,
   expenses: stateStore.wallet.expenses,
-  expenseInEdition: stateStore.wallet.expenseInEdition });
+  expenseInEdition: stateStore.wallet.expenseInEdition,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchCurrencies: () => dispatch(fetchApiCurrencies()),
-  dispatchEditExpense: (expense) => dispatch(editExpense(expense)),
+  dispatchFormEdit: (newArrayExpenses) => dispatch(formEditExpense(newArrayExpenses)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditExpense);
