@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router'; // importação para utilizar as informações do history da página inicial. Encapsular o componente no export.
-import { formEditExpense } from '../actions';
+import { fetchApiCurrencies, formEditExpense } from '../actions';
 
 const paymentMethods = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
 const tags = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
@@ -12,15 +12,20 @@ class EditExpense extends React.Component {
     super(props);
     const { expenseInEdition } = this.props;
     this.state = {
-      id: expenseInEdition.id,
       value: expenseInEdition.value,
       currency: expenseInEdition.currency,
       method: expenseInEdition.method,
       tag: expenseInEdition.tag,
       description: expenseInEdition.description,
+      id: expenseInEdition.id,
     };
     this.handleChange = this.handleChange.bind(this);
     this.onSubmitForm = this.onSubmitForm.bind(this);
+  }
+
+  componentDidMount() {
+    const { dispatchCurrencies } = this.props;
+    dispatchCurrencies();
   }
 
   onSubmitForm() {
@@ -112,7 +117,7 @@ class EditExpense extends React.Component {
             />
           </label>
 
-          {/* { this.currencyInput() } */}
+          { this.currencyInput() }
           { this.methodInput() }
 
           <label htmlFor="tag">
@@ -148,6 +153,7 @@ EditExpense.propTypes = {
     filter: PropTypes.func,
   }).isRequired,
   dispatchFormEdit: PropTypes.func.isRequired,
+  dispatchCurrencies: PropTypes.func.isRequired,
   expenseInEdition: PropTypes.shape({
     id: PropTypes.number,
     value: PropTypes.number,
@@ -165,12 +171,14 @@ EditExpense.propTypes = {
 };
 
 const mapStateToProps = (stateStore) => ({
+  currencies: stateStore.wallet.currencies,
   expenses: stateStore.wallet.expenses,
   expenseInEdition: stateStore.wallet.expenseInEdition,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   dispatchFormEdit: (newArrayExpenses) => dispatch(formEditExpense(newArrayExpenses)),
+  dispatchCurrencies: () => dispatch(fetchApiCurrencies()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditExpense));
