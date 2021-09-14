@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchApiCurrencies, formEditExpense } from '../actions';
+import { withRouter } from 'react-router'; // importação para utilizar as informações do history da página inicial. Encapsular o componente no export.
+import { formEditExpense } from '../actions';
 
 const paymentMethods = ['Dinheiro', 'Cartão de crédito', 'Cartão de débito'];
 const tags = ['Alimentação', 'Lazer', 'Trabalho', 'Transporte', 'Saúde'];
@@ -14,26 +15,20 @@ class EditExpense extends React.Component {
       id: expenseInEdition.id,
       value: expenseInEdition.value,
       currency: expenseInEdition.currency,
-      tag: expenseInEdition.tag,
       method: expenseInEdition.method,
+      tag: expenseInEdition.tag,
       description: expenseInEdition.description,
-      // eslint-disable-next-line react/no-unused-state
-      // exchangeRates: expenseInEdition.exchangeRates,
     };
     this.handleChange = this.handleChange.bind(this);
     this.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
-  componentDidMount() {
-    const { dispatchCurrencies } = this.props;
-    dispatchCurrencies();
-  }
-
   onSubmitForm() {
     const { id } = this.state;
-    const { dispatchFormEdit, expenses } = this.props;
+    const { dispatchFormEdit, expenses, history } = this.props;
     const newArrayExpenses = expenses.splice(id, 0, this.state);
     dispatchFormEdit(newArrayExpenses);
+    history.push('/carteira');
   }
 
   handleChange({ target: { name, value } }) {
@@ -80,6 +75,7 @@ class EditExpense extends React.Component {
   currencyInput() {
     const { currency } = this.state;
     const { currencies } = this.props;
+    console.log(currencies);
     return (
       <label htmlFor="moeda">
         Moeda:
@@ -103,6 +99,7 @@ class EditExpense extends React.Component {
     return (
       <div className="formEditExpense">
         <form>
+
           <label htmlFor="valor">
             Valor:
             <input
@@ -114,8 +111,10 @@ class EditExpense extends React.Component {
               onChange={ this.handleChange }
             />
           </label>
-          { this.currencyInput() }
+
+          {/* { this.currencyInput() } */}
           { this.methodInput() }
+
           <label htmlFor="tag">
             Tag:
             <select
@@ -129,6 +128,7 @@ class EditExpense extends React.Component {
             </select>
           </label>
           { this.descriptionInput() }
+
           <button
             type="button"
             className="btn float-right despesa_btn"
@@ -136,6 +136,7 @@ class EditExpense extends React.Component {
           >
             Editar despesa
           </button>
+
         </form>
       </div>
     );
@@ -143,18 +144,33 @@ class EditExpense extends React.Component {
 }
 
 EditExpense.propTypes = {
-  currencies: PropTypes.array.isRequired,
-}.isRequired;
+  currencies: PropTypes.shape({
+    filter: PropTypes.func,
+  }).isRequired,
+  dispatchFormEdit: PropTypes.func.isRequired,
+  expenseInEdition: PropTypes.shape({
+    id: PropTypes.number,
+    value: PropTypes.number,
+    currency: PropTypes.string,
+    method: PropTypes.string,
+    tag: PropTypes.string,
+    description: PropTypes.string,
+  }).isRequired,
+  expenses: PropTypes.shape({
+    splice: PropTypes.func,
+  }).isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 const mapStateToProps = (stateStore) => ({
-  currencies: stateStore.wallet.currencies,
   expenses: stateStore.wallet.expenses,
   expenseInEdition: stateStore.wallet.expenseInEdition,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchCurrencies: () => dispatch(fetchApiCurrencies()),
   dispatchFormEdit: (newArrayExpenses) => dispatch(formEditExpense(newArrayExpenses)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditExpense);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditExpense));

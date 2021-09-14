@@ -120,8 +120,13 @@ class Expense extends React.Component {
 }
 
 Expense.propTypes = {
-  currencies: PropTypes.array.isRequired,
-}.isRequired;
+  currencies: PropTypes.arrayOf().isRequired,
+  dispatchCurrencies: PropTypes.func.isRequired,
+  dispatchExpense: PropTypes.func.isRequired,
+  expenses: PropTypes.shape({
+    length: PropTypes.number,
+  }).isRequired,
+};
 
 const mapStateToProps = (stateStore) => ({
   currencies: stateStore.wallet.currencies,
