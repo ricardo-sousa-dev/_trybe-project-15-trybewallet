@@ -65,9 +65,9 @@ export function editExpense(expenseInEdition) {
   };
 }
 
-export function formEditExpense(newArrayExpenses) {
+export function formEditExpense(newArrayExpense) {
   return {
     type: FORM_EDIT_EXPENSE,
-    newArrayExpenses,
+    newArrayExpense,
   };
 }

@@ -43,7 +43,8 @@ const wallet = (state = INITIAL_STATE, action) => {
   case FORM_EDIT_EXPENSE:
     return {
       ...state,
-      expenses: [action.newArrayExpenses],
+      editExpense: false,
+      expenses: action.newArrayExpense,
     };
   default:
     return state;

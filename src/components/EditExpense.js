@@ -18,6 +18,7 @@ class EditExpense extends React.Component {
       tag: expenseInEdition.tag,
       description: expenseInEdition.description,
       id: expenseInEdition.id,
+      exchangeRates: expenseInEdition.exchangeRates,
     };
     this.handleChange = this.handleChange.bind(this);
     this.onSubmitForm = this.onSubmitForm.bind(this);
@@ -31,8 +32,9 @@ class EditExpense extends React.Component {
   onSubmitForm() {
     const { id } = this.state;
     const { dispatchFormEdit, expenses, history } = this.props;
-    const newArrayExpenses = expenses.splice(id, 0, this.state);
-    dispatchFormEdit(newArrayExpenses);
+    const newArrayExpense = expenses.filter((expense) => expense.id !== id);
+    newArrayExpense.push(this.state);
+    dispatchFormEdit(newArrayExpense);
     history.push('/carteira');
   }
 
@@ -49,7 +51,7 @@ class EditExpense extends React.Component {
         Método de pagamento:
         <select
           id="método de pagamento"
-          name="method"
+          name="método de pagamento"
           onChange={ this.handleChange }
           className="form__field"
           value={ method }
@@ -69,7 +71,7 @@ class EditExpense extends React.Component {
         <input
           type="text"
           id="descrição"
-          name="description"
+          name="descrição"
           value={ description }
           onChange={ this.handleChange }
         />
@@ -80,13 +82,12 @@ class EditExpense extends React.Component {
   currencyInput() {
     const { currency } = this.state;
     const { currencies } = this.props;
-    console.log(currencies);
     return (
       <label htmlFor="moeda">
         Moeda:
         <select
           type="text"
-          name="currency"
+          name="moeda"
           id="moeda"
           value={ currency }
           onChange={ this.handleChange }
@@ -111,7 +112,7 @@ class EditExpense extends React.Component {
               className="inputValueForm"
               type="text"
               id="valor"
-              name="value"
+              name="valor"
               value={ value }
               onChange={ this.handleChange }
             />
@@ -152,21 +153,22 @@ EditExpense.propTypes = {
   currencies: PropTypes.shape({
     filter: PropTypes.func,
   }).isRequired,
-  dispatchFormEdit: PropTypes.func.isRequired,
   dispatchCurrencies: PropTypes.func.isRequired,
+  dispatchFormEdit: PropTypes.func.isRequired,
   expenseInEdition: PropTypes.shape({
-    id: PropTypes.number,
-    value: PropTypes.number,
     currency: PropTypes.string,
+    description: PropTypes.string,
+    exchangeRates: PropTypes.string,
+    id: PropTypes.number,
     method: PropTypes.string,
     tag: PropTypes.string,
-    description: PropTypes.string,
+    value: PropTypes.number,
   }).isRequired,
   expenses: PropTypes.shape({
-    splice: PropTypes.func,
+    filter: PropTypes.func,
   }).isRequired,
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
+    push: PropTypes.func,
   }).isRequired,
 };
 
@@ -177,7 +179,7 @@ const mapStateToProps = (stateStore) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchFormEdit: (newArrayExpenses) => dispatch(formEditExpense(newArrayExpenses)),
+  dispatchFormEdit: (newArrayExpense) => dispatch(formEditExpense(newArrayExpense)),
   dispatchCurrencies: () => dispatch(fetchApiCurrencies()),
 });
 
