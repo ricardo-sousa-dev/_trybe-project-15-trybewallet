@@ -31,9 +31,10 @@ class FormLogin extends React.Component {
       [name]: value,
     }, () => {
       const { email, password } = this.state;
-      const passwordFormat = '123456';
+      const validEmail = /\S+@\S+\.\S+/;
+      const formatPassword = '123456';
       this.setState(
-        (email === 'alguem@email.com' && password === passwordFormat)
+        (validEmail.test(email) && password === formatPassword)
           ? {
             validateLogin: true,
           } : {

@@ -51,7 +51,7 @@ class EditExpense extends React.Component {
         Método de pagamento:
         <select
           id="método de pagamento"
-          name="método de pagamento"
+          name="method"
           onChange={ this.handleChange }
           className="form__field"
           value={ method }
@@ -71,7 +71,7 @@ class EditExpense extends React.Component {
         <input
           type="text"
           id="descrição"
-          name="descrição"
+          name="description"
           value={ description }
           onChange={ this.handleChange }
         />
@@ -87,7 +87,7 @@ class EditExpense extends React.Component {
         Moeda:
         <select
           type="text"
-          name="moeda"
+          name="currency"
           id="moeda"
           value={ currency }
           onChange={ this.handleChange }
@@ -112,7 +112,7 @@ class EditExpense extends React.Component {
               className="inputValueForm"
               type="text"
               id="valor"
-              name="valor"
+              name="value"
               value={ value }
               onChange={ this.handleChange }
             />
